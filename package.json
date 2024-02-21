@@ -10,8 +10,8 @@
     "test:filter": "npm run fixtures:load && ENV=test tap test --grep=$npm_config_filter --node-arg=--require=ts-node/register --no-coverage",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "format": "prettier --config .prettierrc 'src/**/*.ts' --write"
-
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "deploy": "export AWS_PROFILE=flowing-test-sls ; sls deploy"
   },
   "keywords": [],
   "author": "",
