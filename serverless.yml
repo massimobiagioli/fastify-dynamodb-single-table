@@ -1,0 +1,32 @@
+service: fastify-dynamodb-single-table
+frameworkVersion: '3'
+
+#useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stackTags:
+    Owner: 'Massimo Biagioli'
+    Destroy: 'false'
+
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-tscpaths
+
+package:
+  patterns:
+    - node_modules/**
+    - .serverless/**
+
+functions:
+  app:
+    handler: src/handlers/app.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+      - http:
+          path: /{any+}
+          method: ANY
