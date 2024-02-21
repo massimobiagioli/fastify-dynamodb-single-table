@@ -26,9 +26,9 @@ export default function createApp(
 
   app.register(swaggerUI)
 
-  app.register(autoload, {
-    dir: join(__dirname, 'features'),
-  })
+  // app.register(autoload, {
+  //   dir: join(__dirname, 'features'),
+  // })
 
   app.register(autoload, {
     dir: join(__dirname, 'routes'),
