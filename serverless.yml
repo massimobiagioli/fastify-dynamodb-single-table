@@ -11,6 +11,21 @@ provider:
     Owner: 'Massimo Biagioli'
     Destroy: 'false'
 
+iam:
+  role:
+    statements:
+      - Effect: "Allow"
+        Action:
+          - "dynamodb:DescribeTable"
+          - "dynamodb:Query"
+          - "dynamodb:Scan"
+          - "dynamodb:GetItem"
+          - "dynamodb:PutItem"
+          - "dynamodb:UpdateItem"
+          - "dynamodb:DeleteItem"
+        Resource:
+          - "Fn::GetAtt": [ SingleTableDemo, Arn ]
+          - "Fn::Join": ['/', ["Fn::GetAtt": [ SingleTableDemo, Arn ], 'index', 'gsi1']]
 
 plugins:
   - serverless-plugin-typescript
@@ -31,3 +46,39 @@ functions:
       - http:
           path: /{any+}
           method: ANY
+
+resources:
+  Resources:
+    SingleTableDemo:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: 'single-table-demo'
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+          - AttributeName: gsi1pk
+            AttributeType: S
+          - AttributeName: gsi1sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        GlobalSecondaryIndexes:
+          - IndexName: gsi1
+            KeySchema:
+              - AttributeName: gsi1pk
+                KeyType: HASH
+              - AttributeName: gsi1sk
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
