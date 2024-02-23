@@ -17,24 +17,7 @@ const route: FastifyPluginAsyncTypebox = async function (app) {
       },
     },
     async (req, reply) => {
-      const pk = `AREA#${req.query.areaId}`
-      const sk = `${pk}#NETWORK`
-
-      const result = await app.dynamoDbClient.Network.query(
-        pk,
-        {
-          beginsWith: sk,
-        }
-      )
-
-      const networks = result?.Items?.map((item) => {
-        return {
-          id: item.networkId,
-          type: item.networkType,
-          connectionSpeed: item.connectionSpeed,
-        }
-      })
-
+      const networks = await app.networkService.getByArea(req.query.areaId)
       reply.code(200).send(networks)
     },
   )

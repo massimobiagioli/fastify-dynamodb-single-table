@@ -1,14 +1,14 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
-import { Area } from '@models/area.model'
+import { NetworkWithArea } from '@models/network.model'
 
 const route: FastifyPluginAsyncTypebox = async function (app) {
-  app.get<{ Params: { id: string},  Reply: Area }>(
-    '/',
+  app.get<{ Querystring: { areaId: string}, Reply: NetworkWithArea }>(
+    '/withArea',
     {
       schema: {
-        tags: ['Area'],
+        tags: ['Network'],
         response: {
-          200: Area,
+          200: NetworkWithArea,
           404: {
             type: 'null',
             description: 'Area not found',
@@ -21,11 +21,11 @@ const route: FastifyPluginAsyncTypebox = async function (app) {
       },
     },
     async (req, reply) => {
-      const area = await app.areaService.get(req.params.id)
-      if (!area) {
+      const networksWithArea = await app.networkService.getByAreaWithDetail(req.query.areaId)
+      if (!networksWithArea) {
         return reply.code(404).send()
       }
-      reply.code(200).send(area)
+      reply.code(200).send(networksWithArea)
     },
   )
 }

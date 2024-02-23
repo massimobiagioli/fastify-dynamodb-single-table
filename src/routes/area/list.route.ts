@@ -17,24 +17,7 @@ const route: FastifyPluginAsyncTypebox = async function (app) {
       },
     },
     async (req, reply) => {
-      const result = await app.dynamoDbClient.Area.scan({
-        filters: [
-          {
-            attr: 'type',
-            eq: 'AREA'
-          },
-        ]
-      })
-
-      const areas = result?.Items?.map((item) => {
-        return {
-          id: item.areaId,
-          name: item.areaName,
-          manager: item.manager,
-          location: item.location,
-        }
-      })
-
+      const areas = await app.areaService.getAll()
       reply.code(200).send(areas)
     },
   )
