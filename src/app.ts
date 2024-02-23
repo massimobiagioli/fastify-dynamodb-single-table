@@ -33,6 +33,7 @@ export default function createApp(
   app.register(autoload, {
     dir: join(__dirname, 'routes'),
     options: { prefix: '/api' },
+    routeParams: true
   })
 
   return app

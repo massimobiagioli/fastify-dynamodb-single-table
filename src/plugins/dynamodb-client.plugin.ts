@@ -7,7 +7,8 @@ import { Entity, Table } from 'dynamodb-toolbox'
 declare module 'fastify' {
   interface FastifyInstance {
     dynamoDbClient: {
-      Area: typeof AreaEntity
+      Area: typeof AreaEntity,
+      Network: typeof NetworkEntity,
     }
   }
 }
@@ -49,9 +50,28 @@ const AreaEntity = new Entity({
   table: SingleTableDemo
 } as const)
 
+const NetworkEntity = new Entity({
+  name: 'NETWORK',
+
+  attributes: {
+    id: { partitionKey: true },
+    sk: {
+      sortKey: true,
+      default: (data: { id: string, type: string, networkId: string }) => `${data.id}#${data.type}#${data.networkId}`
+    },
+    type: { type: 'string', required: true },
+    networkId: { type: 'string', required: true },
+    networkType: { type: 'string', required: true },
+    connectionSpeed: { type: 'string', required: true },
+  },
+
+  table: SingleTableDemo
+} as const)
+
 async function dynamoDbClientPlugin(app: FastifyInstance): Promise<void> {
   app.decorate('dynamoDbClient', {
-    Area: AreaEntity
+    Area: AreaEntity,
+    Network: NetworkEntity,
   })
 }
 

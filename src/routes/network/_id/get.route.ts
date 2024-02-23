@@ -1,17 +1,17 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
-import { Area } from '@models/area.model'
+import { Network } from '@models/network.model'
 
 const route: FastifyPluginAsyncTypebox = async function (app) {
-  app.get<{ Params: { areaId: string},  Reply: Area }>(
-    '/:areaId',
+  app.get<{ Params: { id: string}, Querystring: { areaId: string }, Reply: Network }>(
+    '/',
     {
       schema: {
-        tags: ['Area'],
+        tags: ['Network'],
         response: {
-          200: Area,
+          200: Network,
           404: {
             type: 'null',
-            description: 'Area not found',
+            description: 'Network not found',
           },
           500: {
             type: 'null',
@@ -21,10 +21,11 @@ const route: FastifyPluginAsyncTypebox = async function (app) {
       },
     },
     async (req, reply) => {
-      const areaId = `AREA#${req.params.areaId}`
-      const { Item} = await app.dynamoDbClient.Area.get({
-        id: areaId,
-        sk: areaId,
+      const pk = `AREA#${req.query.areaId}`
+      const sk = `${pk}#NETWORK#${req.params.id}`
+      const { Item} = await app.dynamoDbClient.Network.get({
+        id: pk,
+        sk: sk,
       })
 
       if (!Item) {
@@ -32,10 +33,9 @@ const route: FastifyPluginAsyncTypebox = async function (app) {
       }
 
       reply.code(200).send({
-        id: Item.areaId,
-        name: Item.name,
-        manager: Item.manager,
-        location: Item.location,
+        id: Item.networkId,
+        type: Item.networkType,
+        connectionSpeed: Item.connectionSpeed,
       })
     },
   )
