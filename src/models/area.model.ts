@@ -9,6 +9,6 @@ export const Area = Type.Object({
 
 export type Area = Static<typeof Area>
 
-export const AreaListReply = Type.Array(Area)
+export const AreaCollection = Type.Array(Area)
 
-export type AreaListReply = Static<typeof AreaListReply>
+export type AreaCollection = Static<typeof AreaCollection>

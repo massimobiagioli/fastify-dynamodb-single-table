@@ -1,14 +1,14 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
-import { AreaListReply } from '@models/area.model'
+import { AreaCollection } from '@models/area.model'
 
 const route: FastifyPluginAsyncTypebox = async function (app) {
-  app.get<{ Reply: AreaListReply }>(
+  app.get<{ Reply: AreaCollection }>(
     '/',
     {
       schema: {
         tags: ['Area'],
         response: {
-          200: AreaListReply,
+          200: AreaCollection,
           500: {
             type: 'null',
             description: 'Internal server error',
