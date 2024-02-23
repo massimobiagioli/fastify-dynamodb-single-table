@@ -9,6 +9,7 @@ declare module 'fastify' {
     dynamoDbClient: {
       Area: typeof AreaEntity,
       Network: typeof NetworkEntity,
+      Device: typeof DeviceEntity,
     }
   }
 }
@@ -31,6 +32,9 @@ const SingleTableDemo = new Table({
   name: 'single-table-demo',
   partitionKey: 'pk',
   sortKey: 'sk',
+  indexes: {
+    gsi1: { partitionKey: 'gsi1pk', sortKey: 'gsi1sk' }
+  },
   DocumentClient
 })
 
@@ -68,10 +72,32 @@ const NetworkEntity = new Entity({
   table: SingleTableDemo
 } as const)
 
+const DeviceEntity = new Entity({
+  name: 'DEVICE',
+
+  attributes: {
+    id: { partitionKey: true },
+    sk: {
+      sortKey: true,
+      default: (data: { id: string }) => `${data.id}`
+    },
+    gsi1pk: { type: 'string', required: true },
+    gsi1sk: { type: 'string', required: true },
+    type: { type: 'string', required: true },
+    deviceId: { type: 'string', required: true },
+    deviceName: { type: 'string', required: true },
+    deviceType: { type: 'string', required: true },
+    IPAddress: { type: 'string', required: true },
+  },
+
+  table: SingleTableDemo
+} as const)
+
 async function dynamoDbClientPlugin(app: FastifyInstance): Promise<void> {
   app.decorate('dynamoDbClient', {
     Area: AreaEntity,
     Network: NetworkEntity,
+    Device: DeviceEntity,
   })
 }
 
