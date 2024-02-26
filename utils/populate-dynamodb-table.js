@@ -23,45 +23,51 @@ function ID(i, j = 0, k = 0) {
 const data = [];
 for (let i = 1; i <= 3; i++) {
   let area = {
-    type: S('AREA'),
+    _et: S('AREA'),
     areaId: S(ID(i)),
     areaName: S(faker.location.countryCode('alpha-3')),
     manager: S(faker.person.fullName()),
     location: S(faker.location.city()),
+    _ct: S(new Date().toISOString()),
+    _md: S(new Date().toISOString()),
   }
   data.push({
     ...area,
-    pk: S(`${area.type.S}#${area.areaId.S}`),
-    sk: S(`${area.type.S}#${area.areaId.S}`),
+    pk: S(`${area._et.S}#${area.areaId.S}`),
+    sk: S(`${area._et.S}#${area.areaId.S}`),
   })
 
   for (let j = 1; j <= 5; j++) {
     let network = {
-      type: S('NETWORK'),
+      _et: S('NETWORK'),
       networkId: S(ID(i, j)),
       networkType: S(faker.helpers.arrayElement(['LAN', 'WAN'])),
       connectionSpeed: S(faker.helpers.arrayElement(['1Gbps', '100Mbps'])),
+      _ct: S(new Date().toISOString()),
+      _md: S(new Date().toISOString()),
     }
     data.push({
       ...network,
-      pk: S(`${area.type.S}#${area.areaId.S}`),
-      sk: S(`${area.type.S}#${area.areaId.S}#${network.type.S}#${network.networkId.S}`),
+      pk: S(`${area._et.S}#${area.areaId.S}`),
+      sk: S(`${area._et.S}#${area.areaId.S}#${network._et.S}#${network.networkId.S}`),
     })
 
     for (let k = 1; k <= 20; k++) {
       let device = {
-        type: S('DEVICE'),
+        _et: S('DEVICE'),
         deviceId: S(ID(i, j, k)),
         deviceName: S(faker.internet.displayName()),
         deviceType: S(faker.helpers.arrayElement(['Laptop', 'Desktop', 'Server'])),
-        IPAddress: S(faker.internet.ipv4())
+        IPAddress: S(faker.internet.ipv4()),
+        _ct: S(new Date().toISOString()),
+        _md: S(new Date().toISOString()),
       }
       data.push({
         ...device,
-        pk: S(`${device.type.S}#${device.deviceId.S}`),
-        sk: S(`${device.type.S}#${device.deviceId.S}`),
-        gsi1pk: S(`${area.type.S}#${area.areaId.S}#${network.type.S}#${network.networkId.S}`),
-        gsi1sk: S(`${device.type.S}#${device.deviceId.S}`),
+        pk: S(`${device._et.S}#${device.deviceId.S}`),
+        sk: S(`${device._et.S}#${device.deviceId.S}`),
+        gsi1pk: S(`${area._et.S}#${area.areaId.S}#${network._et.S}#${network.networkId.S}`),
+        gsi1sk: S(`${device._et.S}#${device.deviceId.S}`),
       })
     }
   }
