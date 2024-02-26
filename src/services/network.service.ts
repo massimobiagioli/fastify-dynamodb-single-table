@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import fp from 'fastify-plugin'
 import { Network, NetworkCollection, NetworkWithArea } from '@models/network.model'
+import { Area } from '@models/area.model'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -14,6 +15,24 @@ declare module 'fastify' {
 
 async function networkServicePlugin(app: FastifyInstance): Promise<void> {
 
+  function mapItemToArea(item: Record<string, any>): Area {
+    return {
+      id: item.areaId,
+      name: item.name,
+      manager: item.manager,
+      location: item.location,
+    }
+  }
+
+  function mapItemToNetwork(item: Record<string, any>): Network {
+    return {
+      id: item.networkId,
+      areaId: item.areaId,
+      type: item.networkType,
+      connectionSpeed: item.connectionSpeed,
+    }
+  }
+
   async function getByArea(areaId: string): Promise<NetworkCollection> {
     const pk = `AREA#${areaId}`
     const sk = `${pk}#NETWORK`
@@ -25,13 +44,7 @@ async function networkServicePlugin(app: FastifyInstance): Promise<void> {
       }
     )
 
-    return result?.Items?.map((item) => {
-      return {
-        id: item.networkId,
-        type: item.networkType,
-        connectionSpeed: item.connectionSpeed,
-      }
-    }) || []
+    return result?.Items?.map(mapItemToNetwork) || []
   }
 
   async function getById(areaId: string, networkId: string): Promise<Network | null> {
@@ -46,11 +59,7 @@ async function networkServicePlugin(app: FastifyInstance): Promise<void> {
       return null
     }
 
-    return {
-      id: Item.networkId,
-      type: Item.networkType,
-      connectionSpeed: Item.connectionSpeed,
-    }
+    return mapItemToNetwork(Item)
   }
 
   async function getByAreaWithDetail(areaId: string): Promise<NetworkWithArea | null> {
@@ -69,22 +78,11 @@ async function networkServicePlugin(app: FastifyInstance): Promise<void> {
       return null
     }
 
-    const area = {
-      id: areaItem.areaId,
-      name: areaItem.areaName,
-      manager: areaItem.manager,
-      location: areaItem.location,
-    }
+    const area = mapItemToArea(areaItem)
 
     const networks = result?.Items
       ?.filter((item) => item.networkId)
-      ?.map((item) => {
-        return {
-          id: item.networkId,
-          type: item.networkType,
-          connectionSpeed: item.connectionSpeed,
-        }
-      }) ?? []
+      ?.map(mapItemToNetwork) ?? []
 
     return {
       area,

@@ -1,13 +1,13 @@
 import { FastifyInstance } from 'fastify'
 import fp from 'fastify-plugin'
-import { Area, AreaCollection, AreaCreate } from '@models/area.model'
+import { Area, AreaCollection } from '@models/area.model'
 
 declare module 'fastify' {
   interface FastifyInstance {
     areaService: {
       getAll: () => Promise<AreaCollection>,
       get: (id: string) => Promise<Area | null>,
-      put: (id: string, area: AreaCreate) => Promise<Area>,
+      put: (area: Area) => Promise<Area>,
     }
   }
 }
@@ -30,10 +30,8 @@ async function areaServicePlugin(app: FastifyInstance): Promise<void> {
           attr: '_et',
           eq: 'AREA'
         },
-      ]
+      ],
     })
-
-    console.log(result)
 
     return result?.Items?.map(mapItemToArea) || []
   }
@@ -52,9 +50,9 @@ async function areaServicePlugin(app: FastifyInstance): Promise<void> {
     return mapItemToArea(Item)
   }
 
-  async function put(id: string, area: AreaCreate): Promise<Area> {
+  async function put(area: Area): Promise<Area> {
     const result = await app.dynamoDbClient.Area.put({
-      areaId: id,
+      areaId: area.id,
       name: area.name,
       manager: area.manager,
       location: area.location,
@@ -64,10 +62,7 @@ async function areaServicePlugin(app: FastifyInstance): Promise<void> {
       throw new Error('Error creating area')
     }
 
-    return {
-      ...area,
-      id,
-    }
+    return area
   }
 
   app.decorate('areaService', {

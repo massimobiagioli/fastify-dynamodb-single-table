@@ -1,13 +1,13 @@
 import { FastifyPluginAsyncTypebox } from '@fastify/type-provider-typebox'
-import { Area, AreaCreate } from '@models/area.model'
+import { Area } from '@models/area.model'
 
 const route: FastifyPluginAsyncTypebox = async function (app) {
-  app.post<{ Body: AreaCreate, Reply: Area }>(
+  app.post<{ Body: Area, Reply: Area }>(
     '/',
     {
       schema: {
         tags: ['Area'],
-        body: AreaCreate,
+        body: Area,
         response: {
           200: Area,
           500: {
@@ -18,7 +18,7 @@ const route: FastifyPluginAsyncTypebox = async function (app) {
       },
     },
     async (req, reply) => {
-      const area = await app.areaService.put('1234', req.body)
+      const area = await app.areaService.put(req.body)
       reply.code(200).send(area)
     },
   )

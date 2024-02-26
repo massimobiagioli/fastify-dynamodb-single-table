@@ -40,6 +40,7 @@ for (let i = 1; i <= 3; i++) {
   for (let j = 1; j <= 5; j++) {
     let network = {
       _et: S('NETWORK'),
+      areaId: S(area.areaId.S),
       networkId: S(ID(i, j)),
       networkType: S(faker.helpers.arrayElement(['LAN', 'WAN'])),
       connectionSpeed: S(faker.helpers.arrayElement(['1Gbps', '100Mbps'])),

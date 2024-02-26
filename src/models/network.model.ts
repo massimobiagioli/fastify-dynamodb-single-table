@@ -3,6 +3,7 @@ import { Area } from '@models/area.model'
 
 export const Network = Type.Object({
   id: Type.String(),
+  areaId: Type.String(),
   type: Type.String(),
   connectionSpeed: Type.String(),
 })

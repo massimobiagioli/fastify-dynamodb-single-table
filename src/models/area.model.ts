@@ -12,7 +12,3 @@ export type Area = Static<typeof Area>
 export const AreaCollection = Type.Array(Area)
 
 export type AreaCollection = Static<typeof AreaCollection>
-
-export const AreaCreate = Type.Omit(Area, ['id'])
-
-export type AreaCreate = Static<typeof AreaCreate>

@@ -63,12 +63,15 @@ const NetworkEntity = new Entity({
   name: 'NETWORK',
 
   attributes: {
-    id: { partitionKey: true },
+    id: {
+      partitionKey: true ,
+      default: (data: { areaId: string }) => `AREA#${data.areaId}`
+    },
     sk: {
       sortKey: true,
-      default: (data: { id: string, type: string, networkId: string }) => `${data.id}#${data.type}#${data.networkId}`
+      default: (data: { _et: string, areaId: string, networkId: string }) => `AREA#${data.areaId}#${data._et}#${data.networkId}`
     },
-    type: { type: 'string', required: true },
+    areaId: { type: 'string', required: true },
     networkId: { type: 'string', required: true },
     networkType: { type: 'string', required: true },
     connectionSpeed: { type: 'string', required: true },
