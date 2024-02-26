@@ -9,6 +9,7 @@ declare module 'fastify' {
       getByArea: (areaId: string) => Promise<NetworkCollection>,
       getById: (areaId: string, networkId: string) => Promise<Network | null>,
       getByAreaWithDetail: (areaId: string) => Promise<NetworkWithArea | null>,
+      put: (network: Network) => Promise<Network>,
     }
   }
 }
@@ -90,10 +91,26 @@ async function networkServicePlugin(app: FastifyInstance): Promise<void> {
     }
   }
 
+  async function put(network: Network): Promise<Network> {
+    const result = await app.dynamoDbClient.Network.put({
+      areaId: network.areaId,
+      networkId: network.id,
+      networkType: network.type,
+      connectionSpeed: network.connectionSpeed,
+    })
+
+    if (result.$metadata.httpStatusCode !== 200) {
+      throw new Error('Error creating area')
+    }
+
+    return network
+  }
+
   app.decorate('networkService', {
     getByArea,
     getById,
     getByAreaWithDetail,
+    put,
   })
 }
 
