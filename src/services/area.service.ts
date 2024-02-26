@@ -14,7 +14,7 @@ declare module 'fastify' {
 
 async function areaServicePlugin(app: FastifyInstance): Promise<void> {
 
-  function mapItemToArea(item: Record<string, any>): Area {
+  function mapItemToArea(item: Record<string, string>): Area {
     return {
       id: item.areaId,
       name: item.name,

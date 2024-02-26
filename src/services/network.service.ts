@@ -16,7 +16,7 @@ declare module 'fastify' {
 
 async function networkServicePlugin(app: FastifyInstance): Promise<void> {
 
-  function mapItemToArea(item: Record<string, any>): Area {
+  function mapItemToArea(item: Record<string, string>): Area {
     return {
       id: item.areaId,
       name: item.name,
@@ -25,7 +25,7 @@ async function networkServicePlugin(app: FastifyInstance): Promise<void> {
     }
   }
 
-  function mapItemToNetwork(item: Record<string, any>): Network {
+  function mapItemToNetwork(item: Record<string, string>): Network {
     return {
       id: item.networkId,
       areaId: item.areaId,
@@ -73,7 +73,7 @@ async function networkServicePlugin(app: FastifyInstance): Promise<void> {
       }
     )
 
-    const areaItem = result?.Items?.at(0) as Record<string, any>
+    const areaItem = result?.Items?.at(0)
 
     if (!areaItem) {
       return null
