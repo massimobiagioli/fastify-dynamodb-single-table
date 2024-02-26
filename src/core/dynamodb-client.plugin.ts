@@ -42,9 +42,14 @@ const AreaEntity = new Entity({
   name: 'AREA',
 
   attributes: {
-    id: { partitionKey: true },
-    sk: { sortKey: true, default: (data: { areaId: string, type: string }) => `${data.areaId}#${data.type}` },
-    type: { type: 'string', required: true },
+    id: {
+      partitionKey: true,
+      default: (data: { areaId: string, _et: string }) => `${data._et}#${data.areaId}`
+    },
+    sk: {
+      sortKey: true,
+      default: (data: { areaId: string, _et: string }) => `${data._et}#${data.areaId}`
+    },
     name: { type: 'string', required: true, map: 'areaName' },
     areaId: { type: 'string', required: true },
     manager: { type: 'string', required: true },
